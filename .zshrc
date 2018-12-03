@@ -13,9 +13,14 @@ POWERLEVEL9K_VIRTUALENV_FOREGROUND='black'
 POWERLEVEL9K_VIRTUALENV_BACKGROUND='green'
 # POWERLEVEL9K_DIR_OMIT_FIRST_CHARACTER=true
 
+# Load nix
+if [ -e /home/richard/.nix-profile/etc/profile.d/nix.sh ]; then
+  . /home/richard/.nix-profile/etc/profile.d/nix.sh;
+fi # added by Nix installer
+
 # Source Prezto.
-if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
-  source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+if [[ -s "${ZDOTDIR:-$HOME}/.nix-profile/init.zsh" ]]; then
+  source "${ZDOTDIR:-$HOME}/.nix-profile/init.zsh"
 fi
 
 if [ $commands[kubectl] ]; then
@@ -27,5 +32,3 @@ if [ $commands[helm] ]; then
   source <(helm completion zsh)
   true
 fi
-
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
