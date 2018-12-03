@@ -224,5 +224,3 @@ zstyle ':prezto:module:prompt' theme 'powerlevel9k'
 
 path=("$HOME/.local/bin" $path)
 path=("/snap/bin" $path)
-
-if [ -e /home/richard/.nix-profile/etc/profile.d/nix.sh ]; then . /home/richard/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
