@@ -32,3 +32,5 @@ if [ $commands[helm] ]; then
   source <(helm completion zsh)
   true
 fi
+
+autoload -Uz compinit && compinit -i
