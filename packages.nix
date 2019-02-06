@@ -1,7 +1,8 @@
 let
     pkgs = import <nixos-18.09> {};
-in with pkgs; {
-    inherit
+    unstablePkgs = import <nixpkgs> {};
+in {
+    inherit (pkgs)
         zsh
         zsh-prezto
         zsh-powerlevel9k
@@ -16,10 +17,12 @@ in with pkgs; {
         git
         docker
         nixops
+        idris
         ghc;
-    inherit (haskellPackages) Agda;
+    inherit (unstablePkgs)
+        docker-compose;
 
-    docker-completion = stdenv.mkDerivation {
+    docker-completion = pkgs.stdenv.mkDerivation {
         name = "docker-completion";
         version = "18.09.0";
 
@@ -36,7 +39,7 @@ in with pkgs; {
         '';
     };
 
-    docker-compose-completion = stdenv.mkDerivation {
+    docker-compose-completion = pkgs.stdenv.mkDerivation {
         name = "docker-compose-completion";
         version = "1.23.1";
 
