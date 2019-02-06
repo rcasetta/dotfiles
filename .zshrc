@@ -33,4 +33,6 @@ if [ $commands[helm] ]; then
   true
 fi
 
+export NIX_PATH="nixos-18.09=$HOME/.nix-defexpr/channels/nixos-18.09:$NIX_PATH"
+
 autoload -Uz compinit && compinit -i

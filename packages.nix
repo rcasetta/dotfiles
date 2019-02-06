@@ -1,17 +1,25 @@
 let
-    pkgs = import <nixpkgs> {};
-in {
-    zsh = pkgs.zsh;
-    zsh-prezto = pkgs.zsh-prezto;
-    zsh-powerlevel9k = pkgs.zsh-powerlevel9k;
-    powerline-fonts = pkgs.powerline-fonts;
-    firefox = pkgs.firefox;
-    git = pkgs.git;
-    cachix = pkgs.cachix;
-    docker = pkgs.docker;
-    docker-compose = pkgs.docker-compose;
+    pkgs = import <nixos-18.09> {};
+in with pkgs; {
+    inherit
+        zsh
+        zsh-prezto
+        zsh-powerlevel9k
+        powerline-fonts
 
-    docker-completion = pkgs.stdenv.mkDerivation {
+        firefox
+        discord
+        gimp
+
+        cachix
+
+        git
+        docker
+        nixops
+        ghc;
+    inherit (haskellPackages) Agda;
+
+    docker-completion = stdenv.mkDerivation {
         name = "docker-completion";
         version = "18.09.0";
 
@@ -28,7 +36,7 @@ in {
         '';
     };
 
-    docker-compose-completion = pkgs.stdenv.mkDerivation {
+    docker-compose-completion = stdenv.mkDerivation {
         name = "docker-compose-completion";
         version = "1.23.1";
 
@@ -68,6 +76,12 @@ in {
                 publisher = "justusadam";
                 version = "2.5.0";
                 sha256 = "639987da2d55d524bc7e7e307e19593c2fd687ca4bc28f6852cdf4c231925882";
+            }
+            {
+                name = "agda";
+                publisher = "j-mueller";
+                version = "0.1.6";
+                sha256 = "f855e3ea5678be15a268ad0b2379874743d84b78f74758a4f1b74b8707bf0a05";
             }
         ];
     };
