@@ -1,5 +1,5 @@
 let
-    pkgs = import <nixos-18.09> {};
+    pkgs = import <nixos-19.03> {};
     unstablePkgs = import <nixpkgs> {};
 in {
     inherit (pkgs)
@@ -10,7 +10,6 @@ in {
         fira
         fira-code
         htop
-        emacs
         libcanberra
         libcanberra-gtk3
 
@@ -22,7 +21,8 @@ in {
         simplescreenrecorder
         vlc
         redshift
-
+        virtualbox
+        wine
         cachix
 
         git
@@ -34,10 +34,11 @@ in {
     inherit (unstablePkgs)
         skype
         nodejs-11_x
+        "agda-stdlib-1.0"
         docker-compose;
 
     black = unstablePkgs.pythonPackages.black;
-    #agda = unstablePkgs.haskellPackages.Agda;
+    # agda = pkgs.haskellPackages.Agda;
     alex = pkgs.haskellPackages.alex;
     happy = pkgs.haskellPackages.happy;
     now-cli = unstablePkgs.now-cli.overrideAttrs (oldAttrs: rec {
@@ -46,14 +47,15 @@ in {
     texlive = pkgs.texlive.combined.scheme-basic;
     rubber = pkgs.rubber;
     python = pkgs.python36.withPackages (packages: with packages; [ mypy ]);
+    emacs = pkgs.emacsWithPackages (packages: with packages; [ ]);# agda2-mode ]);
 
-    docker-completion = pkgs.stdenv.mkDerivation {
+    docker-completion = pkgs.stdenv.mkDerivation (rec {
         name = "docker-completion";
-        version = "18.09.0";
+        version = pkgs.docker.version;
 
         src = pkgs.fetchurl {
-            url = "https://raw.githubusercontent.com/docker/cli/v18.09.0/contrib/completion/zsh/_docker";
-            sha256 = "0ce6c59184f2345f27d0c49c00d57c9e32f3e4f46c1e8be2c0ea017132d9fac3";
+            url = "https://raw.githubusercontent.com/docker/cli/v${version}/contrib/completion/zsh/_docker";
+            sha256 = "1hzsv4r720gaq3i8n7kcykjg6clygkah1764s0kmyd7jhj8wbrhc";
         };
 
         phases = "installPhase";
@@ -62,15 +64,15 @@ in {
             mkdir -p $out/modules/completion/external/src/
             cp $src $out/modules/completion/external/src/_docker
         '';
-    };
+    });
 
-    docker-compose-completion = pkgs.stdenv.mkDerivation {
+    docker-compose-completion = pkgs.stdenv.mkDerivation (rec {
         name = "docker-compose-completion";
-        version = "1.23.1";
+        version = unstablePkgs.docker-compose.version;
 
         src = pkgs.fetchurl {
-            url = "https://raw.githubusercontent.com/docker/compose/1.23.1/contrib/completion/zsh/_docker-compose";
-            sha256 = "14c47bf9162c0838134a061443abef172846d7a0e097476129231da6d90859f0";
+            url = "https://raw.githubusercontent.com/docker/compose/${version}/contrib/completion/zsh/_docker-compose";
+            sha256 = "1wbdd9jpq0m5695a1gwclw698y189wdkwsihycxj9374zsqlbkr8";
         };
 
         phases = "installPhase";
@@ -79,32 +81,17 @@ in {
             mkdir -p $out/modules/completion/external/src/
             cp $src $out/modules/completion/external/src/_docker-compose
         '';
-    };
+    });
 
-    vscode = pkgs.vscode-with-extensions.override {
+    vscode = unstablePkgs.vscode-with-extensions.override {
         vscodeExtensions = with pkgs.vscode-extensions; [
             bbenoist.Nix
+            alanz.vscode-hie-server
+            justusadam.language-haskell
+            ms-python.python
         ]
         ++
         pkgs.vscode-utils.extensionsFromVscodeMarketplace [
-            {
-                name = "vscode-hie-server";
-                publisher = "alanz";
-                version = "0.0.25";
-                sha256 = "6c776b057fd741909fbdcec6ee3e08e6bc6c20d5254e5222a81d93b407e04154";
-            }
-            {
-                name = "python";
-                publisher = "ms-python";
-                version = "2018.12.0";
-                sha256 = "3bd84915e43c16e17a7c7c27e64eb95cb93ff4ce3976f275506d38056591cf4c";
-            }
-            {
-                name = "language-haskell";
-                publisher = "justusadam";
-                version = "2.5.0";
-                sha256 = "639987da2d55d524bc7e7e307e19593c2fd687ca4bc28f6852cdf4c231925882";
-            }
             {
                 name = "agda";
                 publisher = "j-mueller";
@@ -146,6 +133,36 @@ in {
                 publisher = "janisdd";
                 version = "0.0.11";
                 sha256 = "023b3f5e9e58ad8c25bcd6dd9d79bd10ef8ead3261b3681ec7e58475fd3e40e4";
+            }
+            {
+                name = "latex-input";
+                publisher = "yellpika";
+                version = "0.4.0";
+                sha256 = "d051a914030f2f39c5578fbc5f2bcff8a83c11672ae03452f78bc078cd7cb174";
+            }
+            {
+                name = "ide-purescript";
+                publisher = "nwolverson";
+                version = "0.20.7";
+                sha256 = "8a180f4121d5513e65d1b845cbff776645112041f0711fb8f2256bab4dcd213f";
+            }
+            {
+                name = "language-purescript";
+                publisher = "nwolverson";
+                version = "0.1.2";
+                sha256 = "93ac559a0300cfca14a4ab5eb6f5b87a2aea4ba5843bc37f4cfc604c1639d4a8";
+            }
+            {
+                name = "vscode-purty";
+                publisher = "mvakula";
+                version = "0.3.0";
+                sha256 = "da9d6a0cfb5e4a4af987de16ef86c9b537ad6385e2d4a80cffd31bae0e1b5742";
+            }
+            {
+                name = "dhall-lang";
+                publisher = "panaeon";
+                version = "0.0.4";
+                sha256 = "6a92d00eec9e5badb978a92476ba55d13e934c972ef1e3fc2f746348a5569d61";
             }
         ];
     };
